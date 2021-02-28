@@ -18,12 +18,12 @@
                 <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            <th>{{ __('messages.publication_date') }}</th>
-                            <th>{{ __('messages.product_name') }}</th>
-                            <th>{{ __('messages.category_title') }}</th>
-                            <th>{{ __('messages.user') }}</th>
-                            <th>{{ __('messages.archived_or_not') }}</th>
+                            <th class="text-center">Id</th>
+                            <th class="text-center">{{ __('messages.publication_date') }}</th>
+                            <th class="text-center">{{ __('messages.product_name') }}</th>
+                            <th class="text-center">{{ __('messages.category_title') }}</th>
+                            <th class="text-center">{{ __('messages.user') }}</th>
+                            <th class="text-center">{{ __('messages.archived_or_not') }}</th>
                             <th class="text-center">{{ __('messages.details') }}</th>
                             @if(Auth::user()->update_data)
                                 <th class="text-center">{{ __('messages.edit') }}</th>
@@ -37,21 +37,21 @@
                         <?php $i = 1; ?>
                             @foreach ($data['products'] as $product)
                                 <tr >
-                                    <td><?=$i;?></td>
-                                    <td>
+                                    <td class="text-center"><?=$i;?></td>
+                                    <td class="text-center">
                                         @if( $product->publication_date != null)
                                             {{date('Y-m-d', strtotime($product->publication_date))}}
                                         @else
                                             {{ __('messages.not_publish_yet') }}
                                         @endif</td>
-                                    <td>{{ $product->title }}</td>
-                                    <td>{{ app()->getLocale() == 'en' ? $product->category->title_en : $product->category->title_ar }}</td>
-                                    <td>
+                                    <td class="text-center">{{ $product->title }}</td>
+                                    <td class="text-center">{{ app()->getLocale() == 'en' ? $product->category->title_en : $product->category->title_ar }}</td>
+                                    <td class="text-center">
                                         <a href="{{ route('users.details', $product->user->id) }}" target="_blank">
                                             {{ $product->user->name }}
                                         </a>
                                     </td>
-                                    <td>{{ $product->status == 1 ? __('messages.published') : __('messages.archived') }}</td>
+                                    <td class="text-center">{{ $product->status == 1 ? __('messages.published') : __('messages.archived') }}</td>
                                     <td class="text-center blue-color"><a href="{{ route('products.details', $product->id) }}" ><i class="far fa-eye"></i></a></td>
                                     @if(Auth::user()->update_data)
                                         <td class="text-center blue-color" ><a href="{{ route('products.edit', $product->id) }}" ><i class="far fa-edit"></i></a></td>

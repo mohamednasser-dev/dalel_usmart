@@ -155,6 +155,7 @@
                         </select>
                     </div>
                     <div class="form-group" id="area_cont" style="display:none;" >
+                        <h4>{{ __('messages.area') }}</h4>
                         @php $areas = \App\Area::where('deleted','0')->get(); @endphp
                         <select required class="form-control" name="area_id" id="cmb_area_id">
                             <option selected>{{ __('messages.choose_area') }}</option>
