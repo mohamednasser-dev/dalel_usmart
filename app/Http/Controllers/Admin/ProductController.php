@@ -120,7 +120,7 @@ class ProductController extends AdminController
             ProductImage::create($data_image);
         }
         session()->flash('success', trans('messages.added_s'));
-        return redirect()->route('products.index');      
+        return redirect()->route('products.index');
     }
     // edit get
     public function edit($id)
@@ -150,6 +150,10 @@ class ProductController extends AdminController
                 'longitude' => 'required',
             ]);
         if($request->main_image != null){
+            $image = $prod->main_image;
+            $publicId = substr($image, 0 ,strrpos($image, "."));
+            Cloudder::delete($publicId);
+
             $image_name = $request->file('main_image')->getRealPath();
             Cloudder::upload($image_name, null);
             $imagereturned = Cloudder::getResult();
@@ -184,6 +188,10 @@ class ProductController extends AdminController
     // delete product image
     public function delete_product_image($id)
     {
+        $image_data = ProductImage::where('id',$id)->first();
+        $image = $image_data->image;
+        $publicId = substr($image, 0 ,strrpos($image, "."));
+        Cloudder::delete($publicId);
         ProductImage::where('id',$id)->delete();
         return redirect()->back();
     }
