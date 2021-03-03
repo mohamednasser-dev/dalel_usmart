@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Product;
+use App\AdProduct;
 use App\Chat;
 use App\Conversation;
 use App\Message;
@@ -24,8 +24,8 @@ class ChatController extends Controller
     {
         $user_id = auth()->user()->id;
         $exist = Participant::where('ad_product_id',$request->id)
-                            ->where('user_id',$user_id)
-                            ->first();
+            ->where('user_id',$user_id)
+            ->first();
         if($exist != null){
             $data['exist'] = 'true';
             $data['conversation_id'] = $exist->conversation_id;
@@ -41,17 +41,17 @@ class ChatController extends Controller
         $user_id = auth()->user()->id;
         $lang = $request->lang;
         $data['conversations'] = Participant::where('user_id',$user_id)
-                                ->get()
-                                ->map(function ($convs){
-                                    $other_user = Participant::where('conversation_id',$convs->conversation_id)->where('user_id','!=',auth()->user()->id)->first();
-                                    $convs->other_user_id = $other_user->User->id;
-                                    $convs->user_name = $other_user->User->name;
-                                    $convs->image = $other_user->User->image;
-                                    $convs->last_message = $other_user->Conversation->Message->message;
-                                    $convs->last_message_time = $other_user->Conversation->Message->updated_at->format('g:i a');
-                                    $convs->un_read_num = Message::where('conversation_id',$convs->conversation_id)->where('user_id','!=',auth()->user()->id)->where('is_read','0')->count();
-                                    return $convs;
-                                });
+            ->get()
+            ->map(function ($convs){
+                $other_user = Participant::where('conversation_id',$convs->conversation_id)->where('user_id','!=',auth()->user()->id)->first();
+                $convs->other_user_id = $other_user->User->id;
+                $convs->user_name = $other_user->User->name;
+                $convs->image = $other_user->User->image;
+                $convs->last_message = $other_user->Conversation->Message->message;
+                $convs->last_message_time = $other_user->Conversation->Message->updated_at->format('g:i a');
+                $convs->un_read_num = Message::where('conversation_id',$convs->conversation_id)->where('user_id','!=',auth()->user()->id)->where('is_read','0')->count();
+                return $convs;
+            });
         $response = APIHelpers::createApiResponse(false , 200 , '' , '' , $data , $request->lang);
         return response()->json($response , 200);
     }
@@ -60,7 +60,7 @@ class ChatController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input , [
-            'ad_product_id' => 'required|exists:products,id',
+            'ad_product_id' => 'required|exists:ad_products,id',
             'message' => 'required',
             'type' => 'required',
             'conversation_id' => ''
@@ -70,10 +70,18 @@ class ChatController extends Controller
             return response()->json($response , 406);
         }else{
             if(auth()->user() != null){
-                $ad_product = Product::findOrfail($request->ad_product_id);
-                
+                //test exists message
 
-                if($request->conversation_id == 0){
+                $exist = Participant::where('ad_product_id',$request->ad_product_id)
+                    ->where('user_id',auth()->user()->id)
+                    ->first();
+                if($exist != null){
+                    $conversation_id = $exist->conversation_id;
+                }else{
+                    $conversation_id = 0;
+                }
+                $ad_product = AdProduct::findOrfail($request->ad_product_id);
+                if($conversation_id == 0){
                     if(auth()->user()->id == $ad_product->user_id){
                         $response = APIHelpers::createApiResponse(true , 406 , 'you can`t make conversation to your self ad' ,'لا يمكنك اجراء محادثة لاعلان تمتلكه' , null , $request->lang);
                         return response()->json($response , 406);
@@ -89,7 +97,7 @@ class ChatController extends Controller
                     Participant::create($part_data);
                     $input['conversation_id'] = $conversation->id;
                 }else{
-                    $input['conversation_id'] = $request->conversation_id;
+                    $input['conversation_id'] = $conversation_id;
                 }
                 $other_user = Participant::where('conversation_id',$input['conversation_id'])->where('user_id','!=',auth()->user()->id)->first();
                 $input['user_id'] = auth()->user()->id;
@@ -109,13 +117,11 @@ class ChatController extends Controller
                     $conv_data['last_message_id'] = $message->id ;
                     Conversation::findOrFail($input['conversation_id'])->update($conv_data);
                 }
-                return $message;
                 //begin use firebase to send message
-                    $fb_token = $other_user->User->fcm_token;
+                $fb_token = $other_user->User->fcm_token;
 //                    $fb_token = 'fWhAQ1jMQ4iivvh3Qrnzlo:APA91bF8qD2dspOk8ASLmhO1Q3-mS7HFzcCwSoevdHNtv1JaL3Ps2-u1H6Uy_ASyBXmgpDq2VD_0rw5frliggpMIWnZNmlo-GNGI6tSf7m4Vd6mTPHKgA9sXUrC9Xqc_TbyjtN-xcU_F';
-                    $result =  APIHelpers::send_chat_notification($fb_token,'from ad product','new message arrived',$message->type,$message,null);
+                $result =  APIHelpers::send_chat_notification($fb_token,'from ad product','new message arrived',$message->type,$message,null);
                 //end firebase
-
                 $response = APIHelpers::createApiResponse(false , 200 ,  'message sent successfully','تم ارسال الرسالة بنجاح' , null, $request->lang);
                 return response()->json($response , 200);
             }else{
@@ -133,11 +139,20 @@ class ChatController extends Controller
         $input['is_read'] = '1';
         Message::where('ad_product_id',$request->id)->where('user_id',$other_user->user_id)->where('conversation_id',$partic->conversation_id)->update($input);
 
-        $ad_pro_user_Data = Product::with('user')->findOrFail($request->id);
-        $data['ad_user_data']['name'] = $ad_pro_user_Data->user->name;
-        $data['ad_user_data']['email'] = $ad_pro_user_Data->user->email;
-        $data['ad_user_data']['image'] = $ad_pro_user_Data->user->image;
-        $data['ad_user_data']['phone'] = $ad_pro_user_Data->user->phone;
+        $ad_pro_user_Data = AdProduct::with('user')->findOrFail($request->id);
+        if($ad_pro_user_Data->user_id == $user_id){
+            $user_other_data = User::where('id',$other_user->user_id)->first();
+            $data['ad_user_data']['name'] = $user_other_data->name;
+            $data['ad_user_data']['email'] = $user_other_data->email;
+            $data['ad_user_data']['image'] = $user_other_data->image;
+            $data['ad_user_data']['phone'] = $user_other_data->phone;
+        }else{
+            $data['ad_user_data']['name'] = $ad_pro_user_Data->user->name;
+            $data['ad_user_data']['email'] = $ad_pro_user_Data->user->email;
+            $data['ad_user_data']['image'] = $ad_pro_user_Data->user->image;
+            $data['ad_user_data']['phone'] = $ad_pro_user_Data->user->phone;
+        }
+
         $days =  Message::where('ad_product_id' , $request->id)
             ->where('conversation_id',$partic->conversation_id)
             ->select('id','message','type','user_id','conversation_id','ad_product_id','created_at')
@@ -155,7 +170,7 @@ class ChatController extends Controller
             ->groupBy(function($date) {
                 return  Carbon::parse($date->created_at)->format('Y-m-d');   // grouping by date
             });
-         $i = 0;
+        $i = 0;
         foreach ($days as $key => $row){
 
             $message[$i]['day'] = $key;
