@@ -107,8 +107,8 @@
 <script src="/admin/assets/js/scrollspyNav.js"></script>
 <script src="/admin/assets/js/components/ui-accordions.js"></script>
 {{----------------------------------------end -------------------------------------------}}
-@stack('scripts');
-@yield('scripts');
+@stack('scripts')
+@yield('scripts')
 
 </body>
 </html>

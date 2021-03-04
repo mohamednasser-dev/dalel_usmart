@@ -453,13 +453,14 @@ class UserController extends Controller
 //nasser code
     public function my_account(Request $request){
         $user = auth()->user();
-        $user_data = User::where('id',$user->id)->select('my_wallet','name','phone','free_balance','payed_balance')->first();
+        $user_data = User::where('id',$user->id)->select('my_wallet','name','email','image','phone','free_balance','payed_balance')->first();
         $data['user_name'] = $user_data->name;
-        $data['phone'] = $user_data->phone;
-        $data['my_ads'] = Product::where('user_id',$user->id)->where('deleted',0)->where('publish','Y')->get()->count();
-        $data['my_fav'] = Favorite::where('user_id',$user->id)->get()->count();
-        $data['free_balance'] = $user_data->free_balance;
-        $data['payed_balance'] = $user_data->payed_balance;
+        $data['email'] = $user_data->email;
+        $data['image'] = $user_data->image;
+//        $data['my_ads'] = Product::where('user_id',$user->id)->where('deleted',0)->where('publish','Y')->get()->count();
+//        $data['my_fav'] = Favorite::where('user_id',$user->id)->get()->count();
+//        $data['free_balance'] = $user_data->free_balance;
+//        $data['payed_balance'] = $user_data->payed_balance;
         $response = APIHelpers::createApiResponse(false , 200 , '' , '' , $data , $request->lang);
         return response()->json($response , 200);
     }
@@ -495,7 +496,7 @@ class UserController extends Controller
             $input['work_time_from'] = date("H:i", strtotime($input['work_time_from']));
             $input['work_time_to'] = date("H:i", strtotime($input['work_time_to']));
             if($user != null){
-         
+
                 if($request->image != null){
                     $user_data = User::find($user->id);
                     $publicId = substr($user_data->image, 0 ,strrpos($user_data->image, "."));
@@ -522,7 +523,7 @@ class UserController extends Controller
 
     public function ads_balance(Request $request){
 
-        $data = User::where('id',auth()->user()->id)->select('id' , 'free_ads_count','paid_ads_count')->get();
+        $data = User::where('id',auth()->user()->id)->select('id' , 'free_ads_count','paid_ads_count')->first();
         $response = APIHelpers::createApiResponse(false , 200 , '' , '' , $data , $request->lang);
         return response()->json($response , 200);
     }
