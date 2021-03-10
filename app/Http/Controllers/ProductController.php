@@ -33,6 +33,61 @@ class ProductController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api' , ['except' => ['seller_info','my_remain_balance','cities','basic_info','third_step_excute_pay','save_third_step_with_money','update_ad','select_ad_data','delete_my_ad','save_third_step','save_second_step','save_first_step','getdetails' , 'getoffers' , 'getproducts'  , 'getsearch', 'getFeatureOffers']]);
+        //--------------------------------------------- begin scheduled functions --------------------------------------------------------
+            $expired = Product::where('status',1)->whereDate('expiry_date', '<', Carbon::now())->get();
+            foreach ($expired as $row){
+                $product = Product::find($row->id);
+                $product->status = 2;
+                $product->re_post = '0';
+                $product->save();
+            }
+
+            $not_special = Product::where('status',1)->where('is_special','1')->whereDate('expire_special_date', '<', Carbon::now())->get();
+            foreach ($not_special as $row){
+                $product_special = Product::find($row->id);
+                $product_special->is_special = '0';
+                $product_special->save();
+            }
+            $mytime = Carbon::now();
+            $today =  Carbon::parse($mytime->toDateTimeString())->format('Y-m-d H:i');
+            $re_post_ad = Product::where('status',1)->where('re_post','1')->whereDate('re_post_date', '<', Carbon::now())->get();
+            foreach ($re_post_ad as $row){
+
+                $product_re_post = Product::find($row->id);
+                $product_re_post->created_at = Carbon::now();
+                // to generate new next repost date ...
+                $re_post = Plan_details::where('plan_id',$row->plan_id)->where('type','re_post')->first();
+                $final_pin_date = Carbon::createFromFormat('Y-m-d H:i', $today);
+                $final_expire_re_post_date = $final_pin_date->addDays($re_post->expire_days);
+
+                $product_re_post->re_post_date = $final_expire_re_post_date;
+                $product_re_post->save();
+            }
+
+            $pin_ad = Product::where('status',1)->where('pin','1')->whereDate('expire_pin_date', '<', Carbon::now())->get();
+            foreach ($pin_ad as $row){
+                $product_pined = Product::find($row->id);
+                $product_pined->pin = '0';
+                $product_pined->save();
+            }
+
+            $pin_ad = Setting::where('id',1)->whereDate('free_loop_date', '<', Carbon::now())->first();
+            if ($pin_ad != null) {
+                if($pin_ad->is_loop_free_balance == 'y') {
+                    $all_users = User::where('active', 1)->get();
+                    foreach ($all_users as $row) {
+                        $user = User::find($row->id);
+                        $user->my_wallet = $user->my_wallet + $pin_ad->free_loop_balance;
+                        $user->free_balance = $user->free_balance + $pin_ad->free_loop_balance;
+                        $user->save();
+                    }
+                    $final_pin_date = Carbon::createFromFormat('Y-m-d H:i', $today);
+                    $final_free_loop_date = $final_pin_date->addDays($pin_ad->free_loop_period);
+                    $pin_ad->free_loop_date = $final_free_loop_date ;
+                    $pin_ad->save();
+                }
+            }
+        //--------------------------------------------- end scheduled functions --------------------------------------------------------
     }
 
     public function create(Request $request){
@@ -399,7 +454,7 @@ class ProductController extends Controller
                     return response()->json($response , 406);
                 }
 
-           
+
         }
     }
 
@@ -548,9 +603,9 @@ class ProductController extends Controller
             $response = APIHelpers::createApiResponse(true , 406 , 'يجب اختيار خطة صحيحة' ,'plan not found ', null , $request->lang);
             return response()->json($response , 406);
         }
-        
+
         $products = Product::where('id',$request->ad_id)->first();
-        
+
         if($products == null){
             $response = APIHelpers::createApiResponse(true , 406 , 'يجب اختيار اعلان صحيحة' ,'Ad not found ', null , $request->lang);
             return response()->json($response , 406);
@@ -737,7 +792,7 @@ class ProductController extends Controller
         $response = APIHelpers::createApiResponse(false , 200 , 'data shown' , 'تم أظهار البيانات' , $data , $request->lang);
         return response()->json($response , 200);
     }
-    
+
      public function basic_info(Request $request) {
         $user = auth()->user();
         $data['phone'] = $user->phone ;
@@ -745,9 +800,9 @@ class ProductController extends Controller
         $response = APIHelpers::createApiResponse(false , 200 , 'data shown' , 'تم أظهار البيانات' , $data , $request->lang);
         return response()->json($response , 200);
     }
-    
+
     public function cities(Request $request){
-      
+
         Session::put('api_lang',$request->lang);
         if ($request->lang == 'en') {
             $cities = City::with('Areas')
