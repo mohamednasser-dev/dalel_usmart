@@ -28,7 +28,7 @@
             <br>
             <div class="row">
                 <div class="col-md-2 product_image">
-                    <img style="width: 100%" src="https://res.cloudinary.com/carsads/image/upload/w_100,q_100/v1581928924/{{ $data->main_image }}"  />
+                    <img style="width: 100%" src="https://res.cloudinary.com/bawaba/image/upload/w_100,q_100/v1581928924/{{ $data->main_image }}"  />
                 </div>
             </div>
             <div class="custom-file-container" data-upload-id="mySecondImage">
@@ -49,7 +49,7 @@
                 @foreach ($data->images as $image)
                     <div style="position : relative" class="col-md-2 product_image">
                         <a onclick="return confirm('{{ __('messages.are_you_sure') }}')" style="position : absolute; right : 20px" href="{{ route('productImage.delete', $image->id) }}" class="close">x</a>
-                        <img style="width: 100%" src="https://res.cloudinary.com/carsads/image/upload/w_100,q_100/v1581928924/{{ $image->image }}"  />
+                        <img style="width: 100%" src="https://res.cloudinary.com/bawaba/image/upload/w_100,q_100/v1581928924/{{ $image->image }}"  />
                     </div>
                 @endforeach
             </div>
@@ -252,7 +252,7 @@
                 @endforeach
             </select>
         </div>
-        
+
         <div class="form-group" id="area_cont" >
             <h4>{{ __('messages.area') }}</h4>
             @php $areas = \App\Area::where('deleted','0')->get(); @endphp
