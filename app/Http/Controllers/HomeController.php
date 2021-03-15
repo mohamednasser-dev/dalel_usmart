@@ -122,7 +122,7 @@ class HomeController extends Controller
 //nasser code
     // main ad page
     public function main_ad(Request $request){
-        $data = Main_ad::select('image')->where('deleted' , '0')->inRandomOrder()->take(1)->get();
+        $data = Main_ad::select('image','type','content')->where('deleted' , '0')->inRandomOrder()->take(1)->get();
         if(count($data) == 0){
             $response = APIHelpers::createApiResponse(true , 406 , 'no ads available' ,
                 'لا يوجد اعلانات' , null , $request->lang);
