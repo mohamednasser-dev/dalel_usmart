@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Main_ad extends Model
 {
-    protected $fillable = ['image','deleted'];
+    protected $fillable = ['image','deleted','type','content'];
 }

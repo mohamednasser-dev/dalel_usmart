@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Admin\Ads;
 
+use App\Ad;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Controller;
 use App\Main_ad;
+use App\Product;
+use App\User;
 use JD\Cloudder\Facades\Cloudder;
 use Illuminate\Http\Request;
 
@@ -30,7 +33,8 @@ class MainAdsController extends AdminController
      */
     public function create()
     {
-        return view('admin.ads.main_ads.create');
+        $users = User::orderBy('created_at', 'desc')->get();
+        return view('admin.ads.main_ads.create',compact('users'));
     }
 
     /**
@@ -52,6 +56,12 @@ class MainAdsController extends AdminController
         $image_format = $imagereturned['format'];
         $image_new_name = $image_id.'.'.$image_format;
         $data['image'] = $image_new_name ;
+        if ($request->type == 1) {
+            $data['type'] = "link";
+        }else {
+            $data['type'] = "id";
+        }
+        $data['content'] = $request->content ;
         Main_ad::create($data);
         session()->flash('success', trans('messages.added_s'));
         return redirect( route('main_ads.index'));
@@ -76,7 +86,18 @@ class MainAdsController extends AdminController
      */
     public function edit($id)
     {
-        //
+//        $users = User::orderBy('created_at', 'desc')->get();
+//        $data = Main_ad::find($id);
+
+        $data['ad'] = Main_ad::find($id);
+        $data['users'] = User::orderBy('created_at', 'desc')->get();
+
+        if ($data['ad']['type'] == 'id') {
+            $data['product'] = Product::find($data['ad']['content']);
+        }else {
+            $data['product'] = [];
+        }
+        return view('admin.ads.main_ads.edit', ['data' => $data]);
     }
 
     /**
