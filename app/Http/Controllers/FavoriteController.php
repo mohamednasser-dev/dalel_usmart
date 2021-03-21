@@ -88,10 +88,11 @@ class FavoriteController extends Controller
             foreach ($favorites as $key => $row){
                 $products[$key]['id'] = $row->id;
                 $products[$key]['product_id'] = $row->product_id;
-                
+
                 $products[$key]['title'] = $row->Product->title;
                 $products[$key]['price'] = $row->Product->price;
                 $products[$key]['image'] = $row->Product->main_image;
+                $products[$key]['favorite'] = true;
             }
 
 
