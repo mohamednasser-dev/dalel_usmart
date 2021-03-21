@@ -85,9 +85,18 @@ class FavoriteController extends Controller
                                  ->where('user_id', $user->id)
                                  ->orderBy('id','desc')
                                  ->get();
+            foreach ($favorites as $key => $row){
+                $products[$key]['id'] = $row->id;
+                $products[$key]['product_id'] = $row->product_id;
+                
+                $products[$key]['title'] = $row->Product->title;
+                $products[$key]['price'] = $row->Product->price;
+                $products[$key]['image'] = $row->Product->main_image;
+            }
+
 
             if(count($favorites) > 0) {
-                $response = APIHelpers::createApiResponse(false, 200, '', '', $favorites, $request->lang);
+                $response = APIHelpers::createApiResponse(false, 200, '', '', $products, $request->lang);
             }else{
                 $response = APIHelpers::createApiResponse(false, 200, 'no item favorite to show', 'لا يوجد عناصر للعرض', null, $request->lang);
             }

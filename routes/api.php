@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 
     /*
-    |--------------------------------------------------------------------------
+    |--------------------------------------------------------resetforgettenpassword------------------
     | API Routes
     |--------------------------------------------------------------------------
     |
@@ -141,7 +141,7 @@ use Illuminate\Http\Request;
     //re new my ad   (re publish)
     Route::get('ad/republish_ad/{product_id}/{lang}/{v}' , 'UserController@renewad');
 
-    //seller info 
+    //seller info
     Route::get('/seller_info/{user_id}/{lang}/{v}' , 'ProductController@seller_info')->middleware('checkguest');
 
     //to edit ad
@@ -164,12 +164,12 @@ use Illuminate\Http\Request;
     Route::get('/ad/my_remain_balance/{lang}/{v}' , 'ProductController@my_remain_balance');
     Route::get('/ad/cities/{lang}/{v}' , 'ProductController@cities');
     Route::get('/ad/select_all_plans/{cat_id}/{lang}/{v}' , 'PlanController@select_all_plans');
-    
+
     Route::get('/ad/save_third_step/{ad_id}/{plan_id}/{lang}/{v}' , 'ProductController@save_third_step');
-    
+
     Route::get('/ad/save_third_step_with_money/{ad_id}/{plan_id}/{lang}/{v}' , 'ProductController@save_third_step_with_money');
     Route::get('/ad/save_third_step/excute_pay' , 'ProductController@third_step_excute_pay');
-   
+
 
     Route::get('/ad/select_ended_ads/{lang}/{v}' , 'ProductController@select_ended_ads');
     Route::get('/ad/select_current_ads/{lang}/{v}' , 'ProductController@select_current_ads');
