@@ -191,6 +191,13 @@ class ProductController extends Controller
         $data = Product::with('Product_category')->with('Product_user')
                         ->select('id','title','main_image','description','price','type','publication_date as date','user_id','category_id','city_id','area_id','latitude','longitude','share_location')
                         ->find($request->id);
+        $city = City::where('id',$data->city_id)->first();
+        $area = Area::where('id',$data->area_id)->first();
+        if($lang == 'ar'){
+            $data->address = $city->title_ar . ' - '. $area->title_ar;
+        }else{
+            $data->address = $city->title_en . ' - '. $area->title_en;
+        }
         if($data->Product_user->image == null){
             $settings = Setting::where('id',1)->first();
             $data->Product_user->image = $settings->logo;
