@@ -60,7 +60,7 @@ class ChatController extends Controller
     {
         $input = $request->all();
         $validator = Validator::make($input , [
-            'ad_product_id' => 'required|exists:ad_products,id',
+            'ad_product_id' => 'required|exists:products,id',
             'message' => 'required',
             'type' => 'required',
             'conversation_id' => ''
