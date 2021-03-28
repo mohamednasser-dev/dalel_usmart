@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Chat;
+use App\Product;
 use App\Conversation;
 use App\Message;
 use App\Participant;
-use App\Product;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -119,8 +118,15 @@ class ChatController extends Controller
                 }
                 //begin use firebase to send message
                 $fb_token = $other_user->User->fcm_token;
-//                    $fb_token = 'fWhAQ1jMQ4iivvh3Qrnzlo:APA91bF8qD2dspOk8ASLmhO1Q3-mS7HFzcCwSoevdHNtv1JaL3Ps2-u1H6Uy_ASyBXmgpDq2VD_0rw5frliggpMIWnZNmlo-GNGI6tSf7m4Vd6mTPHKgA9sXUrC9Xqc_TbyjtN-xcU_F';
-                $result =  APIHelpers::send_chat_notification($fb_token,'from ad product','new message arrived',$message->type,$message,null);
+                if($request->lang == 'ar'){
+                    $title = 'رسالة من تطبيق اعلانات و دليل';
+                }else{
+                    $title = 'message  from Announcements and directory app';
+                }
+                $sub_message = substr($message->message,0,50) ;
+                $link = env('APP_URL') . '/api/chat/get_ad_message/'.$message->ad_product_id.'/en/v1';
+//              $fb_token = 'fWhAQ1jMQ4iivvh3Qrnzlo:APA91bF8qD2dspOk8ASLmhO1Q3-mS7HFzcCwSoevdHNtv1JaL3Ps2-u1H6Uy_ASyBXmgpDq2VD_0rw5frliggpMIWnZNmlo-GNGI6tSf7m4Vd6mTPHKgA9sXUrC9Xqc_TbyjtN-xcU_F';
+                $result =  APIHelpers::send_chat_notification( $fb_token , $title , $sub_message , $message->type , $message ,$link ) ;
                 //end firebase
                 $response = APIHelpers::createApiResponse(false , 200 ,  'message sent successfully','تم ارسال الرسالة بنجاح' , null, $request->lang);
                 return response()->json($response , 200);
@@ -130,7 +136,6 @@ class ChatController extends Controller
             }
         }
     }
-
     public function get_ad_message(Request $request)
     {
         $user_id =auth()->user()->id;
