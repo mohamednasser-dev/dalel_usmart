@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\AdProduct;
 use App\Chat;
 use App\Conversation;
 use App\Message;
 use App\Participant;
+use App\Product;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -80,7 +80,7 @@ class ChatController extends Controller
                 }else{
                     $conversation_id = 0;
                 }
-                $ad_product = AdProduct::findOrfail($request->ad_product_id);
+                $ad_product = Product::findOrfail($request->ad_product_id);
                 if($conversation_id == 0){
                     if(auth()->user()->id == $ad_product->user_id){
                         $response = APIHelpers::createApiResponse(true , 406 , 'you can`t make conversation to your self ad' ,'لا يمكنك اجراء محادثة لاعلان تمتلكه' , null , $request->lang);
@@ -139,7 +139,7 @@ class ChatController extends Controller
         $input['is_read'] = '1';
         Message::where('ad_product_id',$request->id)->where('user_id',$other_user->user_id)->where('conversation_id',$partic->conversation_id)->update($input);
 
-        $ad_pro_user_Data = AdProduct::with('user')->findOrFail($request->id);
+        $ad_pro_user_Data = Product::with('user')->findOrFail($request->id);
         if($ad_pro_user_Data->user_id == $user_id){
             $user_other_data = User::where('id',$other_user->user_id)->first();
             $data['ad_user_data']['name'] = $user_other_data->name;
