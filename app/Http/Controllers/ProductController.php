@@ -9,6 +9,7 @@ use App\Helpers\APIHelpers;
 use App\ProductImage;
 use App\Plan_details;
 use App\Product_view;
+use App\Participant;
 use Carbon\Carbon;
 use App\Favorite;
 use App\Product;
@@ -211,7 +212,7 @@ class ProductController extends Controller
                 ->where('other_user_id',$product_conv->user_id)
                 ->first();
             if($exist_part_one == null){
-                $exist_part_one = Product::where('ad_product_id',$request->id)
+                $exist_part_one = Participant::where('ad_product_id',$request->id)
                     ->where('user_id',$product_conv->user_id)
                     ->where('other_user_id',$user->id)
                     ->first();
