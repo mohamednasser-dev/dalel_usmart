@@ -1,32 +1,22 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Category_option;
-use App\Category_option_value;
-use App\Marka;
-use App\MarkaType;
-use App\Plan;
-use App\Plan_details;
-use App\Product_feature;
-use App\Product_view;
-use App\TypeModel;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
+use JD\Cloudder\Facades\Cloudder;
+use Illuminate\Http\Request;
 use App\Helpers\APIHelpers;
+use App\ProductImage;
+use App\Plan_details;
+use App\Product_view;
+use Carbon\Carbon;
+use App\Favorite;
+use App\Product;
+use App\Setting;
+use App\Plan;
 use App\User;
 use App\City;
 use App\Area;
-use App\Favorite;
-use App\Product;
-use App\ProductImage;
-use App\Setting;
-use JD\Cloudder\Facades\Cloudder;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class ProductController extends Controller
 {
@@ -215,13 +205,13 @@ class ProductController extends Controller
 
         if($user != null){
             //Get conversation id
-            $product_conv = AdProduct::find($request->id);
+            $product_conv = Product::find($request->id);
             $exist_part_one = Participant::where('ad_product_id',$request->id)
                 ->where('user_id',$user->id)
                 ->where('other_user_id',$product_conv->user_id)
                 ->first();
             if($exist_part_one == null){
-                $exist_part_one = Participant::where('ad_product_id',$request->id)
+                $exist_part_one = Product::where('ad_product_id',$request->id)
                     ->where('user_id',$product_conv->user_id)
                     ->where('other_user_id',$user->id)
                     ->first();
