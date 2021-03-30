@@ -212,6 +212,28 @@ class ProductController extends Controller
         }else{
             $data->favorite = false;
         }
+
+        if($user != null){
+            //Get conversation id
+            $product_conv = AdProduct::find($request->id);
+            $exist_part_one = Participant::where('ad_product_id',$request->id)
+                ->where('user_id',$user->id)
+                ->where('other_user_id',$product_conv->user_id)
+                ->first();
+            if($exist_part_one == null){
+                $exist_part_one = Participant::where('ad_product_id',$request->id)
+                    ->where('user_id',$product_conv->user_id)
+                    ->where('other_user_id',$user->id)
+                    ->first();
+            }
+            if($exist_part_one != null ){
+                $data->conversation_id = $exist_part_one->conversation_id;
+            }else{
+                $data->conversation_id = 0;
+            }
+        }else{
+            $data->conversation_id = 0;
+        }
         $date = date_create($data->date);
         $user_product = User::find($data->user_id);
         $images = ProductImage::where('product_id' ,  $data->id)->pluck('image')->toArray();
