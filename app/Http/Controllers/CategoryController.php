@@ -158,12 +158,12 @@ class CategoryController extends Controller
             if(auth()->user() != null){
                 $fav_it = Favorite::where('user_id',auth()->user()->id)->where('product_id',$products[$i]['id'])->first();
                 if($fav_it != null){
-                    $products[$i]['favorit'] = true;
+                    $products[$i]['favorite'] = true;
                 }else{
-                    $products[$i]['favorit'] = false;
+                    $products[$i]['favorite'] = false;
                 }
             }else{
-                $products[$i]['favorit'] = false;
+                $products[$i]['favorite'] = false;
             }
         }
         $data['products'] = $products;
@@ -275,15 +275,15 @@ class CategoryController extends Controller
 
          for($i = 0; $i < count($products); $i++){
             if(auth()->user() != null){
-                
+
                 $fav_it = Favorite::where('user_id',auth()->user()->id)->where('product_id',$products[$i]['id'])->first();
                 if($fav_it != null){
-                    $products[$i]['favorit'] = true;
+                    $products[$i]['favorite'] = true;
                 }else{
-                    $products[$i]['favorit'] = false;
+                    $products[$i]['favorite'] = false;
                 }
             }else{
-                $products[$i]['favorit'] = false;
+                $products[$i]['favorite'] = false;
             }
         }
 
@@ -409,15 +409,15 @@ class CategoryController extends Controller
 
          for($i = 0; $i < count($products); $i++){
             if(auth()->user() != null){
-                
+
                 $fav_it = Favorite::where('user_id',auth()->user()->id)->where('product_id',$products[$i]['id'])->first();
                 if($fav_it != null){
-                    $products[$i]['favorit'] = true;
+                    $products[$i]['favorite'] = true;
                 }else{
-                    $products[$i]['favorit'] = false;
+                    $products[$i]['favorite'] = false;
                 }
             }else{
-                $products[$i]['favorit'] = false;
+                $products[$i]['favorite'] = false;
             }
         }
 
@@ -531,12 +531,12 @@ class CategoryController extends Controller
             if(auth()->user() != null){
                 $fav_it = Favorite::where('user_id',auth()->user()->id)->where('product_id',$products[$i]['id'])->first();
                 if($fav_it != null){
-                    $products[$i]['favorit'] = true;
+                    $products[$i]['favorite'] = true;
                 }else{
-                    $products[$i]['favorit'] = false;
+                    $products[$i]['favorite'] = false;
                 }
             }else{
-                $products[$i]['favorit'] = false;
+                $products[$i]['favorite'] = false;
             }
         }
         $data['products'] = $products;
@@ -618,12 +618,12 @@ class CategoryController extends Controller
             if(auth()->user() != null){
                 $fav_it = Favorite::where('user_id',auth()->user()->id)->where('product_id',$products[$i]['id'])->first();
                 if($fav_it != null){
-                    $products[$i]['favorit'] = true;
+                    $products[$i]['favorite'] = true;
                 }else{
-                    $products[$i]['favorit'] = false;
+                    $products[$i]['favorite'] = false;
                 }
             }else{
-                $products[$i]['favorit'] = false;
+                $products[$i]['favorite'] = false;
             }
         }
         $data['products'] = $products;

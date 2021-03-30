@@ -863,12 +863,12 @@ class ProductController extends Controller
        if(auth()->user() != null){
            $fav_it = Favorite::where('user_id',auth()->user()->id)->where('product_id',$products[$i]['id'])->first();
            if($fav_it != null){
-               $products[$i]['favorit'] = true;
+               $products[$i]['favorite'] = true;
            }else{
-               $products[$i]['favorit'] = false;
+               $products[$i]['favorite'] = false;
            }
        }else{
-           $products[$i]['favorit'] = false;
+           $products[$i]['favorite'] = false;
        }
    }
         $user_data = User::where('id',$user_id)->select('id','name','image','latitude','longitude','phone','work_time_from','work_time_to','work_day_from','work_day_to','youtube','twiter','snap_chat','insta','facebook','watsapp')->first();
