@@ -741,20 +741,29 @@ class ProductController extends Controller
         }
     }
     public function select_current_ads(Request $request) {
+        $lang = $request->lang;
         $ads = Product::where('status',1)
                         ->where('deleted',0)
                         ->where('publish','Y')
                         ->where('user_id',auth()->user()->id)
-                        ->select('id' , 'title' , 'price' , 'main_image','views','pin','publication_date')
+                        ->select('id' , 'title' , 'price' , 'main_image','views','pin','publication_date','city_id as city')
                         ->orderBy('pin','desc')
                         ->orderBy('created_at','desc')
                         ->simplePaginate(12)
-                        ->map(function($ads){
+                        ->map(function($ads) use ($lang) {
                             $ads->views =  Product_view::where('product_id',$ads->id)->count();
+                            $city = City::where('id', $ads->city)->first();
+                            if($lang == 'ar' ){
+                                $ads->city =  $city->title_ar;
+                            }else{
+                                $ads->city =  $city->title_en;
+                            }
+
+
                             return $ads;
                         });
         if(count($ads) == 0){
-            $response = APIHelpers::createApiResponse(false , 200 , 'no ended ads yet !' , ' !لا يوجد اعلانات منتهيه حتى الان' , null , $request->lang);
+            $response = APIHelpers::createApiResponse(false , 200 , 'no ads yet !' , ' !لا يوجد اعلانات حتى الان' , null , $request->lang);
             return response()->json($response , 200);
         }else{
             $response = APIHelpers::createApiResponse(false , 200 , '' , '' , $ads , $request->lang);
