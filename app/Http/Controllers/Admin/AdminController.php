@@ -47,12 +47,12 @@ class AdminController extends Controller{
         $mysqlPassword      = env('DB_PASSWORD');
         $DbName             = env('DB_DATABASE');
         $backup_name        = "mybackup.sql";
-        $tables             = array("users","admins","ads","admin_permissions","balance_packages","categories",
+        $tables             = array("users","admins","ads","cities","areas","admin_permissions","balance_packages","categories",
             "contact_us","meta_tags","notifications","settings","categories_ads","category_options","category_option_values",
             "failed_jobs","favorites","main_ads","markas","marka_types","migrations","mndobs","password_resets","permissions","plans",
             "plan_details","rates","sub_categories",
             "sub_two_categories","sub_three_categories","sub_four_categories","sub_five_categories","type_models",
-            "user_notifications","products","product_features","product_images","product_views","visitors","wallet_transactions"); //here your tables...
+            "user_notifications","products","visitors","product_views","product_features","product_images","wallet_transactions","conversations","messages","participants"); //here your tables...
 
         $connect = new \PDO("mysql:host=$mysqlHostName;dbname=$DbName;charset=utf8", "$mysqlUserName", "$mysqlPassword",array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
         $get_all_table_query = "SHOW TABLES";
