@@ -821,8 +821,17 @@ class ProductController extends Controller
 
     public function select_ad_data(Request $request,$id) {
         $data['ad'] = Product::where('id',$id)
-                            ->select('id' ,'category_id' ,'sub_category_id','sub_category_two_id','sub_category_three_id','sub_category_four_id','sub_category_five_id','title','price','description','main_image')
+                            ->select('id' ,'category_id' ,'sub_category_id','sub_category_two_id','sub_category_three_id','sub_category_four_id','sub_category_five_id','title','price','description','main_image','latitude','longitude','share_location','city_id','area_id')
                             ->first();
+        $city = City::find($data['ad']->city_id);
+        $area = Area::find($data['ad']->area_id);
+        if($request->lang == 'ar'){
+            $data['ad']->city_name = $city->title_ar;
+            $data['ad']->area_name = $area->title_ar;
+        }else{
+            $data['ad']->city_name = $city->title_en;
+            $data['ad']->area_name = $area->title_en;
+        }
         $data['ad_images'] = ProductImage::where('product_id',$id)->select('id' , 'image','product_id')->get();
 
         if($request->lang == 'ar'){
