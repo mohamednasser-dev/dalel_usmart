@@ -1,6 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Category;
+use App\SubCategory;
+use App\SubFiveCategory;
+use App\SubFourCategory;
+use App\SubThreeCategory;
+use App\SubTwoCategory;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use JD\Cloudder\Facades\Cloudder;
@@ -816,8 +822,60 @@ class ProductController extends Controller
     public function select_ad_data(Request $request,$id) {
         $data['ad'] = Product::where('id',$id)
                             ->select('id' ,'category_id' ,'sub_category_id','sub_category_two_id','sub_category_three_id','sub_category_four_id','sub_category_five_id','title','price','description','main_image')
-                            ->get();
+                            ->first();
         $data['ad_images'] = ProductImage::where('product_id',$id)->select('id' , 'image','product_id')->get();
+
+        if($request->lang == 'ar'){
+            if($data['ad']->category_id != null) {
+                $cat_data = Category::find($data['ad']->category_id);
+                $data['category_names'] =   $cat_data->title_ar;
+            }
+            if($data['ad']->sub_category_id != null){
+                $scat_data = SubCategory::find($data['ad']->sub_category_id);
+                $data['category_names'] = $data['category_names'] . '/'.$scat_data->title_ar;
+            }
+            if($data['ad']->sub_category_two_id != null){
+                $sscat_data = SubTwoCategory::find($data['ad']->sub_category_two_id);
+                $data['category_names'] = $data['category_names'] . '/'.$sscat_data->title_ar;
+            }
+            if($data['ad']->sub_category_three_id != null){
+                $ssscat_data = SubThreeCategory::find($data['ad']->sub_category_three_id);
+                $data['category_names'] = $data['category_names'] . '/'.$ssscat_data->title_ar;
+            }
+            if($data['ad']->sub_category_four_id != null){
+                $sssscat_data = SubFourCategory::find($data['ad']->sub_category_four_id);
+                $data['category_names'] = $data['category_names'] . '/'.$sssscat_data->title_ar;
+            }
+            if($data['ad']->sub_category_five_id != null){
+                $ssssscat_data = SubFiveCategory::find($data['ad']->sub_category_five_id);
+                $data['category_names'] = $data['category_names'] . '/'.$ssssscat_data->title_ar;
+            }
+        }else{
+            if($data['ad']->category_id != null) {
+                $cat_data = Category::find($data['ad']->category_id);
+                $data['category_names'] =   $cat_data->title_en;
+            }
+            if($data['ad']->sub_category_id != null){
+                $scat_data = SubCategory::find($data['ad']->sub_category_id);
+                $data['category_names'] = $data['category_names'] . '/'.$scat_data->title_en;
+            }
+            if($data['ad']->sub_category_two_id != null){
+                $sscat_data = SubTwoCategory::find($data['ad']->sub_category_two_id);
+                $data['category_names'] = $data['category_names'] . '/'.$sscat_data->title_en;
+            }
+            if($data['ad']->sub_category_three_id != null){
+                $ssscat_data = SubThreeCategory::find($data['ad']->sub_category_three_id);
+                $data['category_names'] = $data['category_names'] . '/'.$ssscat_data->title_en;
+            }
+            if($data['ad']->sub_category_four_id != null){
+                $sssscat_data = SubFourCategory::find($data['ad']->sub_category_four_id);
+                $data['category_names'] = $data['category_names'] . '/'.$sssscat_data->title_en;
+            }
+            if($data['ad']->sub_category_five_id != null){
+                $ssssscat_data = SubFiveCategory::find($data['ad']->sub_category_five_id);
+                $data['category_names'] = $data['category_names'] . '/'.$ssssscat_data->title_en;
+            }
+        }
         $response = APIHelpers::createApiResponse(false , 200 , 'data shown' , 'تم أظهار البيانات' , $data , $request->lang);
         return response()->json($response , 200);
     }
