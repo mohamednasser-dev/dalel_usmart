@@ -3,6 +3,10 @@
 @section('title' , __('messages.product_edit') )
 
 @section('content')
+    <?php
+        $lat =  $data->latitude ;
+        $lng = $data->longitude ;
+    ?>
 <div class="col-lg-12 col-12 layout-spacing">
     <div class="statbox widget box box-shadow">
 
@@ -288,11 +292,14 @@
             </div>
         </div>
         <div class="form-group row">
-            <div class="col-md-6">
-                <input required type="text" value="{{ $data->longitude }}" name="longitude" class="form-control" placeholder="{{ __('messages.longitude') }}">
-            </div>
-            <div class="col-md-6">
-                <input required type="text" value="{{ $data->latitude }}" name="latitude" class="form-control" placeholder="{{ __('messages.latitude') }}">
+            <div class="card-body parent" style='text-align:right' id="parent">
+                <div id="" class="form-group row">
+                    <div class="col-sm-12 ">
+                        <div id="us1" style="width:100%;height:400px;"></div>
+                    </div>
+                    <input required type="hidden" name="latitude" id="lat" value="{{$lat}}">
+                    <input required type="hidden" name="longitude" id="lng" value="{{$lng}}">
+                </div>
             </div>
         </div>
         <input type="submit" value="{{ __('messages.edit') }}" class="btn btn-primary">
@@ -301,4 +308,30 @@
 @endsection
 @section('scripts')
     <script src="/admin/assets/js/generate_categories.js"></script>
+    <script>
+        function myMap() {
+            var mapProp = {
+                center: new google.maps.LatLng({{$lat}},{{$lng}}),
+                zoom: 5,
+            };
+            var map = new google.maps.Map(document.getElementById("us1"), mapProp);
+        }
+    </script>
+    <script
+        src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDPN_XufKy-QTSCB68xFJlqtUjHQ8m6uUY&callback=myMap"></script>
+    <script src="{{url('/')}}/admin/assets/js/locationpicker.jquery.js"></script>
+    <script>
+        $('#us1').locationpicker({
+            location: {
+                latitude: {{$lat}},
+                longitude: {{$lng}}
+            },
+            radius: 300,
+            markerIcon: "{{url('/images/map-marker.png')}}",
+            inputBinding: {
+                latitudeInput: $('#lat'),
+                longitudeInput: $('#lng')
+            }
+        });
+    </script>
 @endsection

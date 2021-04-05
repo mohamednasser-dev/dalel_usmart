@@ -1,6 +1,10 @@
 @extends('admin.app')
 @section('title' , __('messages.add_new_product'))
 @section('content')
+    <?php
+        $lat = '29.280331923084315';
+        $lng = '47.95993041992187';
+    ?>
     <div class="col-lg-12 col-12 layout-spacing">
         <div class="statbox widget box box-shadow">
             <div class="widget-header">
@@ -20,7 +24,7 @@
                     <div class="form-group row">
                         <div class="col-md-8">
                             <h4>{{ __('messages.user') }}</h4>
-                            <select class="form-control" name="user_id" id="sel1">
+                            <select required class="form-control" name="user_id" id="sel1">
                                 <option selected disabled>{{ __('messages.select') }}</option>
                                 @foreach ($data['users'] as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
@@ -168,26 +172,6 @@
                             @endforeach
                         </select>
                     </div>
-                    <h4>{{ __('messages.map_location') }}</h4>
-                    <div class="form-group row">
-                        <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                        <label for="title">{{ __('messages.share_location') }}</label>
-                        </div>
-                        <div class="col-lg-2 col-md-3 col-sm-4 col-6">
-                            <label class="switch s-icons s-outline  s-outline-primary  mb-4 mr-2">
-                                <input type="checkbox" name="share_location" checked>
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <input required type="text" name="longitude" class="form-control" placeholder="{{ __('messages.longitude') }}">
-                        </div>
-                        <div class="col-md-6">
-                            <input required type="text" name="latitude" class="form-control" placeholder="{{ __('messages.latitude') }}">
-                        </div>
-                    </div>
                     <div class="form-group mb-4 mt-3">
                         <h4>{{ __('messages.main_image') }}</h4>
 
@@ -216,11 +200,60 @@
                         </label>
                         <div class="custom-file-container__image-preview"></div>
                     </div>
+                    <h4>{{ __('messages.map_location') }}</h4>
+                    <div class="form-group row">
+                        <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                            <label for="title">{{ __('messages.share_location') }}</label>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                            <label class="switch s-icons s-outline  s-outline-primary  mb-4 mr-2">
+                                <input type="checkbox" name="share_location" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="card-body parent" style='text-align:right' id="parent">
+                            <div id="" class="form-group row">
+                                <div class="col-sm-12 ">
+                                    <div id="us1" style="width:100%;height:400px;"></div>
+                                </div>
+                                <input required type="hidden" name="latitude" id="lat" value="{{$lat}}">
+                                <input required type="hidden" name="longitude" id="lng" value="{{$lng}}">
+                            </div>
+                        </div>
+                    </div>
                     <input type="submit" value="{{ __('messages.add') }}" class="btn btn-primary">
                 </form>
             </div>
 
 @endsection
 @section('scripts')
-   <script src="/admin/assets/js/generate_categories.js"></script>
+    <script src="/admin/assets/js/generate_categories.js"></script>
+    <script>
+        function myMap() {
+            var mapProp = {
+                center: new google.maps.LatLng({{$lat}},{{$lng}}),
+                zoom: 5,
+            };
+            var map = new google.maps.Map(document.getElementById("us1"), mapProp);
+        }
+    </script>
+    <script
+        src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDPN_XufKy-QTSCB68xFJlqtUjHQ8m6uUY&callback=myMap"></script>
+    <script src="{{url('/')}}/admin/assets/js/locationpicker.jquery.js"></script>
+    <script>
+        $('#us1').locationpicker({
+            location: {
+                latitude: {{$lat}},
+                longitude: {{$lng}}
+            },
+            radius: 300,
+            markerIcon: "{{url('/images/map-marker.png')}}",
+            inputBinding: {
+                latitudeInput: $('#lat'),
+                longitudeInput: $('#lng')
+            }
+        });
+    </script>
 @endsection

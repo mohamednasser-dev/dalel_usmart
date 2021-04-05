@@ -969,17 +969,16 @@ class ProductController extends Controller
     public function update_ad(Request $request,$id){
         $input = $request->all();
         $validator = Validator::make($input , [
-            'category_id' => 'required',
-            'sub_category_id' => 'required',
-            'sub_category_two_id' => '',
-            'sub_category_three_id' => '',
-            'sub_category_four_id' => '',
-            'sub_category_five_id' => '',
+
             'title' => 'required',
             'price' => 'required|numeric',
             'description' => '',
             'main_image' => '',
-            'images' => ''
+            'images' => '',
+            'city_id' => 'required',
+            'area_id' => 'required',
+            'latitude' => 'required',
+            'longitude' => 'required'
         ]);
         if($validator->fails()) {
             $response = APIHelpers::createApiResponse(true , 406 , $validator->messages()->first() ,$validator->messages()->first(), null , $request->lang);
