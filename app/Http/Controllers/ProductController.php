@@ -983,7 +983,8 @@ class ProductController extends Controller
             'city_id' => 'required',
             'area_id' => 'required',
             'latitude' => 'required',
-            'longitude' => 'required'
+            'longitude' => 'required',
+            'share_location' => 'required'
         ]);
         if($validator->fails()) {
             $response = APIHelpers::createApiResponse(true , 406 , $validator->messages()->first() ,$validator->messages()->first(), null , $request->lang);
