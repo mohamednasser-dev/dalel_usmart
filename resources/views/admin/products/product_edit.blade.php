@@ -286,7 +286,7 @@
             </div>
             <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                 <label class="switch s-icons s-outline  s-outline-primary  mb-4 mr-2">
-                    <input type="checkbox" name="share_location" @if($data->share_location == '1') checked @endif >
+                    <input type="checkbox" name="share_location" @if($data->share_location == 1) checked @endif >
                     <span class="slider round"></span>
                 </label>
             </div>

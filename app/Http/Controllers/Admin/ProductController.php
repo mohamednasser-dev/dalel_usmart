@@ -1,16 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
 use App\Category_option;
 use App\Category_option_value;
-use App\Helpers\APIHelpers;
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\categories\OptionsValuesController;
 use App\Plan;
 use App\Area;
-use App\Plan_details;
-use App\Product_feature;
 use App\SubCategory;
 use App\SubFiveCategory;
 use App\SubFourCategory;
