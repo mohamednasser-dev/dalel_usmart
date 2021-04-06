@@ -823,11 +823,6 @@ class ProductController extends Controller
         $data['ad'] = Product::where('id',$id)
                             ->select('id' ,'category_id' ,'sub_category_id','sub_category_two_id','sub_category_three_id','sub_category_four_id','sub_category_five_id','title','price','description','main_image','latitude','longitude','share_location','city_id','area_id')
                             ->first();
-        if($data['ad']->share_location == '1'){
-            $data['ad']->share_location = 1 ;
-        }else{
-            $data['ad']->share_location = 0 ;
-        }
         $city = City::find($data['ad']->city_id);
         $area = Area::find($data['ad']->area_id);
         if($request->lang == 'ar'){

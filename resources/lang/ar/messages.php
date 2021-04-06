@@ -81,7 +81,6 @@
             'sub_category_fiveth' => "القسم الفرعى الخامس",
             'main_ads_second' => "اعلانات الصفحة الرئيسية",
             'categories_ads' => "اعلانات الاقسام",
-            'show_ads' => "الاعلانات",
             'mandatory' => "اجبارى",
             'choice' => "اختيارى",
             'type' => "النوع",

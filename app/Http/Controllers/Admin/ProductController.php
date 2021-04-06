@@ -101,9 +101,9 @@ class ProductController extends AdminController
         $data['publication_date'] = $today;
         $data['publish'] = 'Y';
         if($request->share_location){
-            $data['share_location'] = '1';
+            $data['share_location'] = 1;
         }else{
-            $data['share_location'] = '0';
+            $data['share_location'] = 0;
         }
         $product = Product::create($data);
 
@@ -164,9 +164,9 @@ class ProductController extends AdminController
         }
 
         if($request->share_location){
-            $data['share_location'] = '1';
+            $data['share_location'] = 1;
         }else{
-            $data['share_location'] = '0';
+            $data['share_location'] = 0;
         }
         Product::where('id',$id)->update($data);
         if($request->images != null) {
