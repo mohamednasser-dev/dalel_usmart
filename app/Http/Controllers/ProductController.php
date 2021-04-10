@@ -733,11 +733,27 @@ class ProductController extends Controller
     }
 
     public function select_ended_ads(Request $request) {
+        $user = auth()->user();
         $ads = Product::where('status',2)
                         ->where('deleted',0)
                         ->where('user_id',auth()->user()->id)
                         ->select('id' , 'title' , 'price' , 'main_image')
-                        ->get();
+                        ->get()
+            ->map(function($ads) use ($user) {
+                if( $user== null){
+                    $ads->favorite = false ;
+                }else{
+                    $fav =  Favorite::where('user_id',$user->id)->where('product_id',$ads->id)->first();
+                    if($fav != null){
+                        $ads->favorite = true ;
+                    }else{
+                        $ads->favorite = false ;
+                    }
+                }
+                return $ads;
+            });
+
+
         if(count($ads) == 0){
             $response = APIHelpers::createApiResponse(false , 200 , 'no ended ads yet !' , ' !لا يوجد اعلانات منتهيه حتى الان' , null , $request->lang);
             return response()->json($response , 200);
@@ -748,15 +764,16 @@ class ProductController extends Controller
     }
     public function select_current_ads(Request $request) {
         $lang = $request->lang;
+        $user = auth()->user();
         $ads = Product::where('status',1)
                         ->where('deleted',0)
                         ->where('publish','Y')
-                        ->where('user_id',auth()->user()->id)
+                        ->where('user_id',$user->id)
                         ->select('id' , 'title' , 'price' , 'main_image','views','pin','publication_date','city_id as city')
                         ->orderBy('pin','desc')
                         ->orderBy('created_at','desc')
                         ->simplePaginate(12)
-                        ->map(function($ads) use ($lang) {
+                        ->map(function($ads) use ($lang,$user) {
                             $ads->views =  Product_view::where('product_id',$ads->id)->count();
                             $city = City::where('id', $ads->city)->first();
                             if($lang == 'ar' ){
@@ -765,7 +782,16 @@ class ProductController extends Controller
                                 $ads->city =  $city->title_en;
                             }
 
-
+                            if( $user== null){
+                                $ads->favorite = false ;
+                            }else{
+                               $fav =  Favorite::where('user_id',$user->id)->where('product_id',$ads->id)->first();
+                               if($fav != null){
+                                   $ads->favorite = true ;
+                               }else{
+                                   $ads->favorite = false ;
+                               }
+                            }
                             return $ads;
                         });
         if(count($ads) == 0){
