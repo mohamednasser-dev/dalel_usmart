@@ -27,7 +27,7 @@ class FavoriteController extends Controller
             return response()->json($response , 406);
         }
         $validator = Validator::make($request->all() , [
-            'product_id' => 'required',
+            'product_id' => 'required|exists:products',
         ]);
         if($validator->fails()) {
             $response = APIHelpers::createApiResponse(true , 406 ,  'بعض الحقول مفقودة', 'بعض الحقول مفقودة' , null, $request->lang );
@@ -55,7 +55,7 @@ class FavoriteController extends Controller
         }
 
         $validator = Validator::make($request->all() , [
-            'product_id' => 'required',
+            'product_id' => 'required|exists:products',
         ]);
 
         if($validator->fails()) {
