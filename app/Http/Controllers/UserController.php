@@ -508,6 +508,8 @@ class UserController extends Controller
                     $image_format = $imagereturned['format'];
                     $image_new_name = $image_id.'.'.$image_format;
                     $input['image'] = $image_new_name;
+                }else{
+                    unset($input['image']);
                 }
 
                 User::where('id',$user->id)->update($input);
