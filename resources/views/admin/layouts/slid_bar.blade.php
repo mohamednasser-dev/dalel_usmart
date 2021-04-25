@@ -76,11 +76,11 @@
                             <li class="show">
                                 <a href="/admin-panel/products/show">{{ __('messages.show') }}</a>
                             </li>
-                            @if(Auth::user()->add_data)
-                                <li class="add">
-                                    <a href="/admin-panel/products/add">{{ __('messages.add') }}</a>
-                                </li>
-                            @endif
+{{--                            @if(Auth::user()->add_data)--}}
+{{--                                <li class="add">--}}
+{{--                                    <a href="/admin-panel/products/add">{{ __('messages.add') }}</a>--}}
+{{--                                </li>--}}
+{{--                            @endif--}}
                         </ul>
                     </li>
                 @endif
