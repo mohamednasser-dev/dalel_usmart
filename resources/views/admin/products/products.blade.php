@@ -55,7 +55,7 @@
                                     <td class="text-center">{{ $product->status == 1 ? __('messages.published') : __('messages.archived') }}</td>
                                     <td class="text-center">
                                         @if($product->pin == 0)
-                                            <a  id="btn_pin" data-toggle="modal" data-id="{{$product->id}}" data-pin="{{$product->pin}}" data-expire="{{date('Y-m-d', strtotime($product->expire_pin_date)) }}"
+                                            <a  id="btn_pin" data-toggle="modal" data-id="{{$product->id}}" data-pin="{{$product->pin}}" @if($product->expire_pin_date != null) data-expire="{{date('Y-m-d', strtotime($product->expire_pin_date)) }}" @endif
                                                 data-target="#save_model" class="btn btn-dark  mb-2 mr-2 rounded-circle" title="{{ __('messages.pin_it') }}"
                                                data-original-title="Tooltip using BUTTON tag">
                                                 <div class="icon-container">
@@ -63,7 +63,7 @@
                                                 </div>
                                             </a>
                                         @else
-                                            <a  id="btn_pin" data-toggle="modal" data-id="{{$product->id}}" data-pin="{{$product->pin}}" data-expire="{{date('Y-m-d', strtotime($product->expire_pin_date)) }}"
+                                            <a  id="btn_pin" data-toggle="modal" data-id="{{$product->id}}" data-pin="{{$product->pin}}" @if($product->expire_pin_date != null) data-expire="{{date('Y-m-d', strtotime($product->expire_pin_date)) }}" @endif
                                                 data-target="#save_model" class="btn btn-info  mb-2 mr-2 rounded-circle" title="{{ __('messages.pin_it') }}"
                                                 data-original-title="Tooltip using BUTTON tag">
                                                 <div class="icon-container">
