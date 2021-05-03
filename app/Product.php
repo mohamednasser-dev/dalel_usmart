@@ -10,7 +10,7 @@ class Product extends Model
     protected $fillable = ['title','description', 'price','category_id','sub_category_id','sub_category_two_id','expire_special_date',
         'sub_category_three_id','sub_category_four_id','user_id', 'type','publication_date','re_post_date','is_special',
         'views', 'offer', 'status', 'expiry_date','main_image','expire_pin_date','created_at','plan_id','publish','sub_category_five_id',
-        'city_id','area_id','latitude','longitude','share_location','deleted'];
+        'city_id','area_id','latitude','longitude','share_location','deleted','pin'];
 
     public function Product_category() {
         if(session('api_lang') == 'ar'){
@@ -18,7 +18,7 @@ class Product extends Model
         }else{
             return $this->belongsTo('App\Category', 'category_id')->select('id','title_en as title');
         }
-        
+
     }
     public function category() {
         return $this->belongsTo('App\Category', 'category_id');

@@ -179,6 +179,30 @@ class ProductController extends AdminController
         session()->flash('success', trans('messages.updated_s'));
         return redirect()->route('products.index');
     }
+    public function make_pin(Request $request)
+    {
+        $data = $this->validate(\request(),
+            [
+                'ad_id' => 'required|exists:products,id',
+                'day_num' => 'required',
+            ]);
+        $product = Product::find($request->ad_id);
+        $mytime = Carbon::now();
+        $today =  Carbon::parse($mytime->toDateTimeString())->format('Y-m-d H:i');
+        if($product->pin == 0){
+            //to create expire pin date
+            $final_pin_date = Carbon::createFromFormat('Y-m-d H:i', $today);
+            $final_expire_pin_date = $final_pin_date->addDays($request->day_num);
+            $input['pin'] = 1;
+            $input['expire_pin_date'] = $final_expire_pin_date;
+            session()->flash('success', trans('messages.ad_pin_s'));
+        }else{
+            $input['pin'] = 0;
+            session()->flash('success', trans('messages.not_ad_pin_s'));
+        }
+        Product::where('id',$request->ad_id)->update($input);
+        return back();
+    }
     // delete product image
     public function delete_product_image($id)
     {

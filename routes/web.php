@@ -95,7 +95,7 @@ Route::group(['middleware'=>'language','prefix' => "admin-panel",'namespace' => 
     Route::post('/cities/area/store' , 'CityController@store_area')->name('area.store');
     Route::post('/cities/area/update/{id}' , 'CityController@update_area')->name('area.update');
     Route::get('/cities/area/delete/{id}' , 'CityController@destroy_area')->name('area.delete');
-    
+
 
     Route::resource('balance_packages' , 'BalanceBackagesController');
     Route::post('/balance_p/update/{id}' , 'BalanceBackagesController@update')->name('balance_p.update');
@@ -204,6 +204,7 @@ Route::group(['middleware'=>'language','prefix' => "admin-panel",'namespace' => 
         Route::get('delete/productimage/{id}' , 'ProductController@delete_product_image')->name("productImage.delete");
         Route::get('details/{product_id}' , 'ProductController@details')->name("products.details");
         Route::get('delete/{product}' , 'ProductController@delete')->name("delete.product");
+        Route::post('make_pin' , 'ProductController@make_pin')->name("product.make_pin");
     });
 
     // Plans Routes
