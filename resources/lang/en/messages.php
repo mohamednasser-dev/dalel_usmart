@@ -1,6 +1,14 @@
 <?php
     return [
 
+        'pin_it_now' => "pin ad",
+        'day_num' => "The number of days",
+        'save' => "save",
+        'expire_date' => "The expiration date of the pin ad",
+        'ad_pin_s' => "The ad has been pin successfully",
+        'not_ad_pin_s' => "The ad has been unpin successfully",
+
+
         'ad_settings' => "Ads settings",
         'cities' => "Provinces",
         'areas' => "Regions",
