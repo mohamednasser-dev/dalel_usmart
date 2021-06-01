@@ -31,6 +31,7 @@ class CategoryController extends Controller
             $categories = Category::with('Sub_categories')
                                 ->where('deleted' , 0)
                                 ->select('id' , 'title_en as title')
+                                ->orderBy('sort' , 'asc')
                                 ->get()
                                 ->map(function($cats) {
                                     for ($i =0; $i < count($cats->Sub_categories); $i ++) {
@@ -47,6 +48,7 @@ class CategoryController extends Controller
             $categories = Category::with('Sub_categories')
                                 ->where('deleted' , 0)
                                 ->select('id' , 'title_ar as title')
+                                ->orderBy('sort' , 'asc')
                                 ->get()
                                 ->map(function($cats) {
                                     for ($i =0; $i < count($cats->Sub_categories); $i ++) {
@@ -66,10 +68,17 @@ class CategoryController extends Controller
     // get ad subcategories
     public function getAdSubCategories(Request $request) {
         if($request->lang == 'en'){
-            $data['sub_categories'] = SubCategory::where('deleted' , 0)->where('category_id' , $request->category_id)->select('id' , 'image' , 'title_en as title')->get()->toArray();
+            $data['sub_categories'] = SubCategory::where('deleted' , 0)
+                ->where('category_id' , $request->category_id)->select('id' , 'image' , 'title_en as title')
+                ->orderBy('sort' , 'asc')
+                ->get()->toArray();
             $data['category'] = Category::select('id' , 'title_en as title')->find($request->category_id);
         }else{
-            $data['sub_categories'] = SubCategory::where('deleted' , 0)->where('category_id' , $request->category_id)->select('id' , 'image' , 'title_ar as title')->get()->toArray();
+            $data['sub_categories'] = SubCategory::where('deleted' , 0)
+                ->where('category_id' , $request->category_id)
+                ->select('id' , 'image' , 'title_ar as title')
+                ->orderBy('sort' , 'asc')
+                ->get()->toArray();
             $data['category'] = Category::select('id' , 'title_ar as title')->find($request->category_id);
         }
         for ($i =0; $i < count($data['sub_categories']); $i ++) {
@@ -95,7 +104,8 @@ class CategoryController extends Controller
         }
         if($request->lang == 'en'){
             if ($request->sub_category_id != 0) {
-                $data['sub_categories'] = SubTwoCategory::where('deleted' , 0)->where('sub_category_id' , $request->sub_category_id)->select('id' , 'image' , 'title_en as title')->get()->toArray();
+                $data['sub_categories'] = SubTwoCategory::where('deleted' , 0)->where('sub_category_id' , $request->sub_category_id)->orderBy('sort' , 'asc')
+                    ->select('id' , 'image' , 'title_en as title')->get()->toArray();
                 $data['sub_category_level1'] = SubCategory::where('id', $request->sub_category_id)->select('id', 'title_en as title', 'category_id')->first();
                 $data['sub_category_array'] = SubCategory::where('category_id', $data['sub_category_level1']['category_id'])->select('id', 'title_en as title', 'category_id')->get()->makeHidden('category_id');
                 $data['category'] = Category::where('id', $data['sub_category_level1']['category_id'])->select('id', 'title_en as title')->first();

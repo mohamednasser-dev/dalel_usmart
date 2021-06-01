@@ -49,6 +49,7 @@
     CKEDITOR.replace('editor-ck-en');
     CKEDITOR.replace('editor-ck-ar');
 </script>
+
 <script>
     $('#html5-extension').DataTable({
         buttons: {
