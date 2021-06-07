@@ -30,7 +30,7 @@ class CityController extends AdminController
     {
         return view('admin.cities.create');
     }
-   
+
 
     public function store(Request $request)
     {
@@ -64,7 +64,8 @@ class CityController extends AdminController
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        $data = City::findOrFail($id)->first();
+
+        $data = City::whereId($id)->first();
         return view('admin.cities.edit', compact('data'));
     }
     public function update(Request $request, $id) {
@@ -106,7 +107,7 @@ class CityController extends AdminController
         return redirect( route('cities.show',$request->city_id));
     }
     public function edit_area($id) {
-        $data = Area::findOrFail($id)->first();
+        $data = Area::whereId($id)->first();
         return view('admin.cities.areas.edit', compact('data'));
     }
     public function update_area(Request $request, $id) {
