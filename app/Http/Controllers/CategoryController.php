@@ -27,41 +27,24 @@ class CategoryController extends Controller
     }
     public function getcategories(Request $request){
         Session::put('api_lang',$request->lang);
-        if ($request->lang == 'en') {
-            $categories = Category::with('Sub_categories')
+        $lang = $request->lang;
+        $categories = Category::with('Sub_categories')
                                 ->where('deleted' , 0)
-                                ->select('id' , 'title_en as title')
+                                ->select('id' , 'title_'.$lang.' as title')
                                 ->orderBy('sort' , 'asc')
                                 ->get()
                                 ->map(function($cats) {
                                     for ($i =0; $i < count($cats->Sub_categories); $i ++) {
                                         $cat_ids[$i] = $cats->Sub_categories[$i]['id'];
-                                        $subTwoCats = SubTwoCategory::where('sub_category_id', $cats->Sub_categories[$i]['id'])->select('id')->first();
-                                        $cats->Sub_categories[$i]['next_level'] = false;
-                                        if (isset($subTwoCats['id'])) {
+                                        $subTwoCats = SubTwoCategory::where('deleted',0)->where('sub_category_id', $cat_ids[$i])->get();
+                                        if (count($subTwoCats) > 0) {
                                             $cats->Sub_categories[$i]['next_level'] = true;
+                                        }else{
+                                            $cats->Sub_categories[$i]['next_level'] = false;
                                         }
                                     }
                                     return $cats;
                                 });
-        }else {
-            $categories = Category::with('Sub_categories')
-                                ->where('deleted' , 0)
-                                ->select('id' , 'title_ar as title')
-                                ->orderBy('sort' , 'asc')
-                                ->get()
-                                ->map(function($cats) {
-                                    for ($i =0; $i < count($cats->Sub_categories); $i ++) {
-                                        $cat_ids[$i] = $cats->Sub_categories[$i]['id'];
-                                        $subTwoCats = SubTwoCategory::where('sub_category_id', $cats->Sub_categories[$i]['id'])->select('id')->first();
-                                        $cats->Sub_categories[$i]['next_level'] = false;
-                                        if (isset($subTwoCats['id'])) {
-                                            $cats->Sub_categories[$i]['next_level'] = true;
-                                        }
-                                    }
-                                    return $cats;
-                                });
-        }
         $response = APIHelpers::createApiResponse(false , 200 ,  '', '' , array('categories'=>$categories), $request->lang );
         return response()->json($response , 200);
     }
